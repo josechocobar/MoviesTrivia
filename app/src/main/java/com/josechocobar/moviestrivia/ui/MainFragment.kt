@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.presentation.MainVievModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -52,7 +53,7 @@ class MainFragment : Fragment() {
             }
 
         })
-        GlobalScope.launch {
+        GlobalScope.launch(IO) {
             viewModel.internetStatus.catch { }.collect {
                     value->Log.d(TAG,"The value is $value")
                 when(value){

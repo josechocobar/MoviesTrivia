@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 class InternetConnectionChecker {
     suspend fun repeater(): Boolean {
         while (true){
-            delay(2000)
+            delay(20000)
             return internetIsConnected()
         }
     }

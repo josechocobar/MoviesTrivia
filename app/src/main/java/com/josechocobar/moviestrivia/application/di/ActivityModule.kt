@@ -2,6 +2,7 @@ package com.josechocobar.moviestrivia.application.di
 
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.remote.RemoteDataSource
+import com.josechocobar.moviestrivia.data.remote.RemoteDataSourceInt
 import com.josechocobar.moviestrivia.domain.IRepo
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.Module
@@ -15,14 +16,14 @@ import dagger.hilt.android.scopes.ViewModelScoped
 object ActivityModule {
     @Provides
     @ViewModelScoped
-    fun bindRepoImpl(dataSource: RemoteDataSource):RepoImplementation  {
+    fun bindRepoImpl(dataSource: RemoteDataSourceInt):RepoImplementation  {
         return RepoImplementation(dataSource)
     }
 
 
     @Provides
     @ViewModelScoped
-    fun bindDatasourceeImpl(): RemoteDataSource {
+    fun bindDatasourceImpl(): RemoteDataSourceInt {
         return RemoteDataSource()
     }
 

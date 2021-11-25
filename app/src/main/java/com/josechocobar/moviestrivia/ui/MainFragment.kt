@@ -1,5 +1,6 @@
 package com.josechocobar.moviestrivia.ui
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,10 @@ import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.presentation.MainVievModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -30,24 +35,33 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    viewModel.fetchPopulatMoviesList.observe(viewLifecycleOwner, Observer {
-        result ->
+        viewModel.fetchPopulatMoviesList.observe(viewLifecycleOwner, Observer { result ->
 
-        when(result){
-            is Resource.Loading->{
-                Log.d("VIEWMODEL","Cargando")
+            when (result) {
+                is Resource.Loading -> {
+                    Log.d("VIEWMODEL", "Cargando")
+                }
+                is Resource.Success -> {
+                    Log.d("VIEWMODEL", "Correcto!")
+                    Log.d("VIEWMODEL", "como es correcto las pelis son ${result.data.results}")
+                }
+                is Resource.Failure -> {
+                    Log.d("VIEWMODEL", "Fail!")
+                    Log.d("VIEWMODEL", "${result.exception}!")
+                }
             }
-            is Resource.Success->{
-                Log.d("VIEWMODEL","Correcto!")
-                Log.d("VIEWMODEL","como es correcto las pelis son ${result.data.results}")
-            }
-            is Resource.Failure->{
-                Log.d("VIEWMODEL","Fail!")
-                Log.d("VIEWMODEL","${result.exception}!")
+
+        })
+        GlobalScope.launch {
+            viewModel.internetStatus.catch { }.collect {
+                    value->Log.d(TAG,"The value is $value")
+                when(value){
+                    true->Log.d(TAG,"actualizar db")
+                    false->Log.d(TAG,"User db")
+                }
             }
         }
 
-    })
     }
 
 }

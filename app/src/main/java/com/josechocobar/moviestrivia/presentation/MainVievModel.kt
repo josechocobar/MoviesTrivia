@@ -7,6 +7,7 @@ import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 import javax.inject.Inject
@@ -23,8 +24,11 @@ class MainVievModel @Inject constructor(
             emit(Resource.Failure(e))
         }
     }
-    val internetStatus = flow<Boolean> {
-        InternetConnectionChecker().repeater()
+    suspend fun internetStatus() = flow<Boolean> {
+        while (true){
+            emit(InternetConnectionChecker().repeater())
+            delay(2000)
+        }
     }
 
 }

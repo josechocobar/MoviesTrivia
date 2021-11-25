@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.josechocobar.moviestrivia.R
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
+import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainVievModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
@@ -21,8 +23,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
-
-
+    private var binding:FragmentMainBinding? = null
     val viewModel: MainVievModel by activityViewModels<MainVievModel>()
 
 
@@ -36,6 +37,8 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentMainBinding.bind(view)
+        val tvInternetChecker : TextView = binding!!.tvInternetChecker
         viewModel.fetchPopulatMoviesList.observe(viewLifecycleOwner, Observer { result ->
 
             when (result) {
@@ -54,11 +57,13 @@ class MainFragment : Fragment() {
 
         })
         GlobalScope.launch(IO) {
-            viewModel.internetStatus.catch { }.collect {
+            viewModel.internetStatus().catch { }.collect {
                     value->Log.d(TAG,"The value is $value")
                 when(value){
-                    true->Log.d(TAG,"actualizar db")
-                    false->Log.d(TAG,"User db")
+                    true->{Log.d(TAG,"actualizar db")
+                    tvInternetChecker.text = "actualizar db"}
+                    false->{Log.d(TAG,"User db")
+                        tvInternetChecker.text = "user db"}
                 }
             }
         }

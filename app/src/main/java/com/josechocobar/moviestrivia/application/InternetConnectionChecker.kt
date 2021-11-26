@@ -7,10 +7,7 @@ import kotlinx.coroutines.flow.flow
 
 
 class InternetConnectionChecker {
-    suspend fun repeater(): Boolean {
-            return internetIsConnected()
-    }
-    private fun internetIsConnected(): Boolean {
+    fun internetIsConnected(): Boolean {
         return try {
             val command = "ping -c 1 google.com"
             Runtime.getRuntime().exec(command).waitFor() == 0

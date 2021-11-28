@@ -1,23 +1,21 @@
 package com.josechocobar.moviestrivia.utils
 
 import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 class DataTypeConverter {
+
     @TypeConverter
-    fun listToString(value:List<Int>):String{
-        var genre = ""
-        value.forEach {
-            genre += "$it,"
-        }
-        return genre
+    fun fromArrayList(list: List<Int>): String {
+        val gson = Gson()
+        return gson.toJson(list)
     }
+
     @TypeConverter
-    fun stringToList(str : String):List<Int>{
-        val mutableList = mutableListOf<Int>()
-        val splitStr = str.split(",")
-        splitStr.forEach {
-            mutableList.add(it.toInt())
-        }
-        return mutableList
+    fun fromString(value: String): List<Int> {
+        val listType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+        return Gson().fromJson(value, listType)
     }
 }

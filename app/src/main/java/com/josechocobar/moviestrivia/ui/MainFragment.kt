@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.josechocobar.moviestrivia.R
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private var binding:FragmentMainBinding? = null
-    val viewModel: MainViewModel by activityViewModels<MainViewModel>()
+    val viewModel: MainViewModel by viewModels<MainViewModel>()
 
 
     override fun onCreateView(

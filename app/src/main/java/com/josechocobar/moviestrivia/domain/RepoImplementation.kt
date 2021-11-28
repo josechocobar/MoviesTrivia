@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class RepoImplementation @Inject constructor(
     val remoteDataSource: RemoteDataSourceInt,
-    private val localDao: LocalDatabaseDao
+    val localDao: LocalDatabaseDao
 ) : IRepo {
     override suspend fun getMovieList(): Resource<MovieRequest> {
         return remoteDataSource.getPopularMovies()

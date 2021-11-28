@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repoImplementation: RepoImplementation,
+    private val repoImplementation: RepoImplementation
 
     ) : ViewModel() {
     var date: LocalDateTime = LocalDateTime.now()

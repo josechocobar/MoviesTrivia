@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
-import com.josechocobar.moviestrivia.presentation.MainVievModel
+import com.josechocobar.moviestrivia.presentation.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private var binding:FragmentMainBinding? = null
-    val viewModel: MainVievModel by activityViewModels<MainVievModel>()
+    val viewModel: MainViewModel by activityViewModels<MainViewModel>()
 
 
     override fun onCreateView(

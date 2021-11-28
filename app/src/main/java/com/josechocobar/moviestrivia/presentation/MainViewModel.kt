@@ -7,6 +7,7 @@ import androidx.lifecycle.liveData
 import com.josechocobar.moviestrivia.application.InternetConnectionChecker
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.domain.RepoImplementation
+import com.josechocobar.moviestrivia.utils.DateHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -14,13 +15,18 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainVievModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation,
 
-) : ViewModel() {
+    ) : ViewModel() {
+    var date: LocalDateTime = LocalDateTime.now()
     val fetchPopulatMoviesList = liveData(Dispatchers.IO) {
         emit(Resource.Loading)
         try {
@@ -33,7 +39,7 @@ class MainVievModel @Inject constructor(
     suspend fun internetStatus() = flow<Boolean> {
         while (true) {
             emit(InternetConnectionChecker().internetIsConnected())
-            delay(2000)
+            delay(5000)
         }
     }
 
@@ -43,6 +49,10 @@ class MainVievModel @Inject constructor(
             when (value) {
                 true -> {
                     Log.d(ContentValues.TAG, "actualizar db")
+                    val nowDate = LocalDateTime.now()
+                    if (DateHandler().isLessThanT(date,nowDate)){
+
+                    }
                 }
                 false -> {
                     Log.d(ContentValues.TAG, "User db")
@@ -50,7 +60,6 @@ class MainVievModel @Inject constructor(
             }
         }
     }
-
 
 
 }

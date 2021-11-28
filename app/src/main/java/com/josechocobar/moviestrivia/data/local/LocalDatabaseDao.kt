@@ -7,13 +7,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LocalDatabaseDao {
     @Query("SELECT * FROM movie_table ORDER BY id")
-    suspend fun getMovieList(): Flow<List<Movie>>
+    fun getMovieList(): Flow<List<Movie>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(movie: Movie)
-
-    @Delete
-    suspend fun deleteAll()
 
     @Delete
     suspend fun deleteItem(item:Movie)

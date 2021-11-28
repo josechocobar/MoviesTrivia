@@ -1,10 +1,8 @@
 package com.josechocobar.moviestrivia.application.di
 
-import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.local.LocalDatabaseDao
 import com.josechocobar.moviestrivia.data.remote.RemoteDataSource
 import com.josechocobar.moviestrivia.data.remote.RemoteDataSourceInt
-import com.josechocobar.moviestrivia.domain.IRepo
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.Module
 import dagger.Provides

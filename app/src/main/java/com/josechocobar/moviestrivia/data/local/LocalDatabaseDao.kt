@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocalDatabaseDao {
-    @Query("SELECT * FROM movie_table ORDER BY id")
+    @Query("SELECT * FROM movie_table ORDER BY idroom")
     fun getMovieList(): Flow<List<Movie>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

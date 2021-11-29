@@ -1,6 +1,5 @@
 package com.josechocobar.moviestrivia.domain
 
-import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.local.LocalDatabaseDao
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.data.model.MovieRequest

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.josechocobar.moviestrivia.application.InternetConnectionChecker
 import com.josechocobar.moviestrivia.application.Resource
+import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -16,19 +17,14 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation
 ) : ViewModel() {
-    val fetchPopulatMoviesList = flow {
-        emit(Resource.Loading)
-        try{
-            emit(repoImplementation.localDao.getMovieList())
-        }catch (e:Exception){
-            emit(Resource.Failure(e))
-        }
+
+    fun getMovies(): Flow<List<Movie>> {
+     return repoImplementation.localDao.getMovieList()
     }
+
     suspend fun internetStatus() = flow<Boolean> {
-        while (true) {
             emit(InternetConnectionChecker().internetIsConnected())
-            delay(10000)
-        }
+            delay(100000)
     }
     suspend fun actualDb(){
         val fetchPopularMovieData = try {

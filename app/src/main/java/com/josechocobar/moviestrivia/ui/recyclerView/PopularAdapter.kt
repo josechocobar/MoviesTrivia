@@ -28,7 +28,7 @@ class PopularAdapter(
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         when(holder){
-            is MovieViewHolder -> movieList.get(position).let { holder.bind(it,position) }
+            is MovieViewHolder -> movieList[position].let { holder.bind(it,position) }
         }
     }
 
@@ -38,10 +38,10 @@ class PopularAdapter(
 
     inner class MovieViewHolder(itemView:View) : BaseViewHolder<Movie>(itemView){
         val movieTitle : TextView = itemView.findViewById(R.id.tv_title)
-        val movieOverview : TextView = itemView.findViewById(R.id.tv_things)
+        val popularity : TextView = itemView.findViewById(R.id.tv_things)
         override fun bind(item: Movie,position: Int){
             movieTitle.text = item.title
-            movieOverview.text = item.overview
+            popularity.text = item.popularity.toString()
             Glide.with(context).load("https://image.tmdb.org/t/p/original${item.poster_path}").transform(RoundedCorners(200)).centerCrop().into(itemView.findViewById(R.id.img_movie))
             itemView.setOnClickListener {
                 itemClickListener.onMovieClick(item, position)

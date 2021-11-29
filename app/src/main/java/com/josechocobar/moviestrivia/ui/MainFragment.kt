@@ -14,10 +14,8 @@ import androidx.fragment.app.viewModels
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
-import com.josechocobar.moviestrivia.utils.DateHandler
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch

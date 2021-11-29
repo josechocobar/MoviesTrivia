@@ -10,14 +10,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation
 ) : ViewModel() {
-    var date: LocalDateTime = LocalDateTime.now()
     val fetchPopulatMoviesList = flow {
         emit(Resource.Loading)
         try{
@@ -29,7 +27,7 @@ class MainViewModel @Inject constructor(
     suspend fun internetStatus() = flow<Boolean> {
         while (true) {
             emit(InternetConnectionChecker().internetIsConnected())
-            delay(5000)
+            delay(10000)
         }
     }
     suspend fun actualDb(){
@@ -41,8 +39,7 @@ class MainViewModel @Inject constructor(
         repoImplementation.localDao.deleteAll()
         fetchPopularMovieData.results?.forEach {
             repoImplementation.localDao.insertItem(it)
-        }
-        date= LocalDateTime.now()
+        } ?: throw Exception("no results")
         Log.d(TAG,"upgraded db")
     }
 }

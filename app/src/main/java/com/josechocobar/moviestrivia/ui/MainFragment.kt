@@ -19,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
-    private var binding:FragmentMainBinding? = null
+    private var binding: FragmentMainBinding? = null
     val viewModel: MainViewModel by viewModels()
 
 
@@ -41,24 +42,30 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
-        val tvInternetChecker : TextView = binding!!.tvInternetChecker
+        val tvInternetChecker: TextView = binding!!.tvInternetChecker
 
         GlobalScope.launch(Dispatchers.Main) {
             observeDataSource()
             viewModel.fetchPopulatMoviesList
-                .catch {  }
-                .collect {
-                    result->
-                    when(result){
-                        is Resource.Loading ->{Log.d(TAG,"Loading...")}
-                        is List<*> ->{ Log.d(TAG, result.toString()) }
-                        is Resource.Failure ->{Log.d(TAG,"error ${result.exception.message}")}
+                .catch { }
+                .collect { result ->
+                    when (result) {
+                        is Resource.Loading -> {
+                            Log.d(TAG, "Loading...")
+                        }
+                        is List<*> -> {
+                            Log.d(TAG, result.toString())
+                        }
+                        is Resource.Failure -> {
+                            Log.d(TAG, "error ${result.exception.message}")
+                        }
                     }
                 }
 
         }
 
     }
+
     suspend fun observeDataSource() {
         viewModel.internetStatus().catch { }.collect { value ->
             Log.d(ContentValues.TAG, "The value is $value")
@@ -66,10 +73,10 @@ class MainFragment : Fragment() {
                 true -> {
                     Log.d(ContentValues.TAG, "actualizar db")
                     val nowDate = LocalDateTime.now()
-                    if (DateHandler().isLessThanT(viewModel.date, nowDate)) {
-                        Log.d(TAG, "db upgrade on")
-                        viewModel.actualDb()
-                    }
+                    Log.d(TAG, "db upgrade on")
+                    viewModel.actualDb()
+                    delay(1800000) //media hora
+
                 }
                 false -> {
                     Log.d(ContentValues.TAG, "User db")

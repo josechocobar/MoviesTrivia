@@ -4,7 +4,7 @@ import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.model.MovieRequest
 
 class RemoteDataSource() :RemoteDataSourceInt {
-    override suspend fun getPopularMovies() : Resource<MovieRequest>{
-        return Resource.Success(RetrofitService.webService.getPopularMovies())
+    override suspend fun getPopularMovies() : MovieRequest{
+        return RetrofitService.webService.getPopularMovies()
     }
 }

@@ -9,9 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.josechocobar.moviestrivia.R
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
@@ -40,33 +38,20 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMainBinding.bind(view)
         val tvInternetChecker : TextView = binding!!.tvInternetChecker
-        viewModel.fetchPopulatMoviesList.observe(viewLifecycleOwner, Observer { result ->
 
-            when (result) {
-                is Resource.Loading -> {
-                    Log.d("VIEWMODEL", "Cargando")
+        GlobalScope.launch() {
+            viewModel.observeDataSource()
+            viewModel.fetchPopulatMoviesList
+                .catch {  }
+                .collect {
+                    result->
+                    when(result){
+                        is Resource.Loading ->{}
+                        is List<*> ->{ }
+                        is Resource.Failure ->{Log.d(TAG,"error ${result.exception.message}")}
+                    }
                 }
-                is Resource.Success -> {
-                    Log.d("VIEWMODEL", "Correcto!")
-                    Log.d("VIEWMODEL", "como es correcto las pelis son ${result.data.results}")
-                }
-                is Resource.Failure -> {
-                    Log.d("VIEWMODEL", "Fail!")
-                    Log.d("VIEWMODEL", "${result.exception}!")
-                }
-            }
 
-        })
-        GlobalScope.launch(IO) {
-            viewModel.internetStatus().catch { }.collect {
-                    value->Log.d(TAG,"The value is $value")
-                when(value){
-                    true->{Log.d(TAG,"actualizar db")
-                    tvInternetChecker.text = "actualizar db"}
-                    false->{Log.d(TAG,"User db")
-                        tvInternetChecker.text = "user db"}
-                }
-            }
         }
 
     }

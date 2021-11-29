@@ -13,7 +13,7 @@ class RepoImplementation @Inject constructor(
     val remoteDataSource: RemoteDataSourceInt,
     val localDao: LocalDatabaseDao
 ) : IRepo {
-    override suspend fun getMovieList(): Resource<MovieRequest> {
+    override suspend fun getMovieList(): MovieRequest {
         return remoteDataSource.getPopularMovies()
     }
 

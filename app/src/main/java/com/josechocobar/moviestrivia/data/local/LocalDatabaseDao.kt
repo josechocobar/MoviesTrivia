@@ -15,4 +15,7 @@ interface LocalDatabaseDao {
     @Delete
     suspend fun deleteItem(item:Movie)
 
+    @Query("DELETE FROM movie_table")
+    suspend fun deleteAll()
+
 }

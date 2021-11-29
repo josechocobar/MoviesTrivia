@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation
 ) : ViewModel() {
     var date: LocalDateTime = LocalDateTime.now()
-    val fetchPopulatMoviesList = flow<Any> {
+    val fetchPopulatMoviesList = flow {
         emit(Resource.Loading)
         try{
             emit(repoImplementation.localDao.getMovieList())
@@ -39,24 +39,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun observeDataSource() {
-        internetStatus().catch { }.collect { value ->
-            Log.d(ContentValues.TAG, "The value is $value")
-            when (value) {
-                true -> {
-                    Log.d(ContentValues.TAG, "actualizar db")
-                    val nowDate = LocalDateTime.now()
-                    if (DateHandler().isLessThanT(date, nowDate)) {
-                        Log.d(TAG, "db upgrade on")
-                        actualDb()
-                    }
-                }
-                false -> {
-                    Log.d(ContentValues.TAG, "User db")
-                }
-            }
-        }
-    }
+
     suspend fun actualDb(){
         val fetchPopularMovieData = try {
             repoImplementation.remoteDataSource.getPopularMovies()
@@ -67,6 +50,7 @@ class MainViewModel @Inject constructor(
         fetchPopularMovieData.results?.forEach {
             repoImplementation.localDao.insertItem(it)
         }
+        date= LocalDateTime.now()
         Log.d(TAG,"upgraded db")
     }
 

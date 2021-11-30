@@ -16,19 +16,16 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation
 ) : ViewModel() {
+    fun getMovieByName(name:String):List<Movie>{
+        var filterList = mutableListOf<Movie>()
+        repoImplementation.localDao.getMovieList().catch {  }.map {
+            filterList = it.filter { title-> title.title.contains(name) } as MutableList<Movie>
+        }
+        return filterList
+    }
 
     fun getMovies(): Flow<List<Movie>> {
      return repoImplementation.localDao.getMovieList()
-    }
-    suspend fun getMovieById(idroom:Int): Movie {
-        return repoImplementation.localDao.getMovieById(idroom)
-    }
-    suspend fun getSizeOfList(): Int {
-        var list = listOf<Movie>()
-        getMovies().collect { list = it
-        }
-        Log.d(TAG,"size is ${list.size}")
-        return list.size
     }
 
     suspend fun internetStatus() = flow<Boolean> {

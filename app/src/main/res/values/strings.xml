@@ -4,4 +4,6 @@
     <string name="image_uri">https://image.tmdb.org/t/p/original</string>
     <string name="loading">Loading…</string>
     <string name="upgrade_db">upgrade db</string>
+    <string name="no_connection">no connection</string>
+    <string name="connection">connection</string>
 </resources>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import com.josechocobar.moviestrivia.R
@@ -39,11 +40,11 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
 
 
     private var binding: FragmentMainBinding? = null
-    val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     var tvInternetChecker: TextView? = null
     var upgradeButton: Button? = null
     var loadingDialog: LoadingDialog? = null
-    var date : LocalDateTime?=null
+    private var date : LocalDateTime?=null
     var dbPull = true
 
 
@@ -66,11 +67,12 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         setButtons()
         setUpObserver()
         observeInternet()
+        setupSearchView()
     }
-    fun observeInternet(){
+    private fun observeInternet(){
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.internetStatus().catch { }.collect { value ->
-                Log.d(ContentValues.TAG, "The value is $value")
+                Log.d(TAG, "The value is $value")
                 when (value) {
                     true -> {
                         val nowDate = LocalDateTime.now()
@@ -86,27 +88,36 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                         }
                     }
                     false -> {
-                        Log.d(ContentValues.TAG, "User db")
+                        Log.d(TAG, "User db")
                         tvInternetChecker?.visibility = View.VISIBLE
-                        tvInternetChecker?.text = "no connection"
+                        tvInternetChecker?.text = getString(R.string.no_connection)
                     }
                 }
             }
         }
     }
-    /*
-    val nowDate = LocalDateTime.now()
-        if (DateHandler().isLessThanT(date, nowDate)) {
-            Log.d(TAG, "db upgrade on")
-            actualDb()
-        }
-        if (getSizeOfList()==0){
-            Log.d(TAG, "db upgrade first time")
-            actualDb()
-        }
-     */
+    private fun setupSearchView(){
+        binding?.svSearchMovie?.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(name: String): Boolean {
+                return if ((viewModel.getMovieByName(name).isNotEmpty())){
+                    binding?.rvPopular?.adapter = PopularAdapter(
+                        requireContext(),
+                        viewModel.getMovieByName(name),
+                        this@MainFragment
+                    )
+                    true
+                }else{
+                    false
+                }
+            }
 
-    fun setUpObserver() {
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+        })
+    }
+
+    private fun setUpObserver() {
         viewModel.viewModelScope.launch {
             viewModel.getMovies()
                 .map {
@@ -130,11 +141,11 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         )
     }
 
-    fun setButtons() {
+    private fun setButtons() {
         upgradeButton?.setOnClickListener {
             viewModel.viewModelScope.launch {
                 viewModel.internetStatus().catch { }.collect { value ->
-                    Log.d(ContentValues.TAG, "The value is $value")
+                    Log.d(TAG, "The value is $value")
                     when (value) {
                         true -> {
                             upgradeDb()
@@ -146,10 +157,10 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         }
     }
 
-    suspend fun upgradeDb() {
-        tvInternetChecker?.text = "connection"
+    private suspend fun upgradeDb() {
+        tvInternetChecker?.text = getString(R.string.connection)
         tvInternetChecker?.visibility = View.GONE
-        Log.d(ContentValues.TAG, "actualizar db")
+        Log.d(TAG, "actualizar db")
         Log.d(TAG, "db upgrade on")
         viewModel.actualDb()
     }
@@ -167,7 +178,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
 
 
     }
-    fun animateButton(){
+    private fun animateButton(){
         val render = Render()
         render.setAnimation(Fade().OutLeft(binding?.rvPopular!!))
         render.setDuration(900)

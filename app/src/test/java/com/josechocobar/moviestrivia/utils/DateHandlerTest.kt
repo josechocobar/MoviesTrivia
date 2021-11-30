@@ -1,6 +1,5 @@
 package com.josechocobar.moviestrivia.utils
 
-import io.mockk.mockk
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Before

@@ -21,6 +21,9 @@ class MainViewModel @Inject constructor(
     fun getMovies(): Flow<List<Movie>> {
      return repoImplementation.localDao.getMovieList()
     }
+    suspend fun getMovieById(idroom:Int): Movie {
+        return repoImplementation.localDao.getMovieById(idroom)
+    }
 
     suspend fun internetStatus() = flow<Boolean> {
             emit(InternetConnectionChecker().internetIsConnected())

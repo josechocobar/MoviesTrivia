@@ -19,4 +19,7 @@ class RepoImplementation @Inject constructor(
     override suspend fun getMovieLocalList(): Flow<List<Movie>> {
         return localDao.getMovieList()
     }
+    override suspend fun getMovieById(idroom:Int):Movie{
+        return localDao.getMovieById(idroom)
+    }
 }

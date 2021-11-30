@@ -10,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.josechocobar.moviestrivia.R
 import com.josechocobar.moviestrivia.data.model.Movie
-import kotlinx.coroutines.CoroutineScope
 
 class PopularAdapter(
     private val context: Context,

@@ -2,6 +2,7 @@ package com.josechocobar.moviestrivia.ui
 
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,15 +12,21 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import com.josechocobar.moviestrivia.R
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
+import com.josechocobar.moviestrivia.ui.animations.Bounce
+import com.josechocobar.moviestrivia.ui.animations.Flip
+import com.josechocobar.moviestrivia.ui.animations.Render
 import com.josechocobar.moviestrivia.ui.recyclerView.PopularAdapter
 import com.josechocobar.moviestrivia.utils.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +60,8 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         tvInternetChecker = binding!!.tvInternetChecker
         upgradeButton = binding!!.buUpgradeDb
         loadingDialog = LoadingDialog(requireActivity())
+        val navController = findNavController()
+
         setUpRecyclerView()
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.internetStatus().catch { }.collect { value ->
@@ -71,7 +80,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         }
         setButtons()
         setUpObserver()
-
     }
 
     fun setUpObserver() {
@@ -83,8 +91,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                         it,
                         this@MainFragment
                     )
-                    it.forEach {
-                        movie->
+                    it.forEach { movie ->
                         Log.d(ContentValues.TAG, "The value is $movie")
                     }
 
@@ -92,7 +99,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                 .collect {}
         }
     }
-
 
     private fun setUpRecyclerView() {
         binding?.rvPopular?.layoutManager = LinearLayoutManager(requireContext())
@@ -102,15 +108,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                 DividerItemDecoration.VERTICAL
             )
         )
-        /*
-        binding!!.rvCarrito.layoutManager = LinearLayoutManager(requireContext())
-           binding!!.rvCarrito.addItemDecoration(DividerItemDecoration(
-                   requireContext(),
-                   DividerItemDecoration.VERTICAL
-           ))
-         */
     }
-
 
     fun setButtons() {
         upgradeButton?.setOnClickListener {
@@ -138,7 +136,19 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
 
     override fun onMovieClick(item: Movie, position: Int) {
         Toast.makeText(requireContext(), "no me señales", Toast.LENGTH_LONG).show()
-    }
+        animateButton(requireContext())
+        try {
+            findNavController().navigate(R.id.itemDetailFragment, bundleOf("idroom" to item))
+        }catch (e:Exception){
+            Log.d(TAG,"Failure cause ${e.message}")
+        }
 
+    }
+    fun animateButton(context: Context){
+        val render = Render(context)
+        render.setAnimation(Bounce().In(binding?.rvPopular!!))
+        render.setDuration(3000)
+        render.start()
+    }
 
 }

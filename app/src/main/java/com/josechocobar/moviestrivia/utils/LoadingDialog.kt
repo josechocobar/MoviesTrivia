@@ -6,12 +6,9 @@ import androidx.appcompat.app.AlertDialog
 import com.josechocobar.moviestrivia.R
 
 class LoadingDialog (myactivity: Activity){
-    lateinit var activity: Activity
+    var activity: Activity = myactivity
     var dialog: Dialog?=null
 
-    init {
-        activity = myactivity
-    }
     fun startLoadingDialog(){
         val builder : AlertDialog.Builder = AlertDialog.Builder(activity)
         val inflater = activity.layoutInflater

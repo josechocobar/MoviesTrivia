@@ -7,4 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface IRepo {
     suspend fun getMovieList() : MovieRequest
     suspend fun getMovieLocalList() : Flow<List<Movie>>
+    suspend fun getMovieById(idroom:Int):Movie
 }

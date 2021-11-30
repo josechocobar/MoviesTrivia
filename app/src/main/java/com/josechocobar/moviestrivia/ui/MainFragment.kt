@@ -25,6 +25,7 @@ import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
 import com.josechocobar.moviestrivia.ui.animations.Bounce
+import com.josechocobar.moviestrivia.ui.animations.Fade
 import com.josechocobar.moviestrivia.ui.animations.Flip
 import com.josechocobar.moviestrivia.ui.animations.Render
 import com.josechocobar.moviestrivia.ui.recyclerView.PopularAdapter
@@ -60,10 +61,13 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         tvInternetChecker = binding!!.tvInternetChecker
         upgradeButton = binding!!.buUpgradeDb
         loadingDialog = LoadingDialog(requireActivity())
-        val navController = findNavController()
-
         setUpRecyclerView()
-        GlobalScope.launch(Dispatchers.Main) {
+        setButtons()
+        setUpObserver()
+        observeInternet()
+    }
+    fun observeInternet(){
+        viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.internetStatus().catch { }.collect { value ->
                 Log.d(ContentValues.TAG, "The value is $value")
                 when (value) {
@@ -78,8 +82,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                 }
             }
         }
-        setButtons()
-        setUpObserver()
     }
 
     fun setUpObserver() {
@@ -91,10 +93,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                         it,
                         this@MainFragment
                     )
-                    it.forEach { movie ->
-                        Log.d(ContentValues.TAG, "The value is $movie")
-                    }
-
                 }
                 .collect {}
         }
@@ -135,19 +133,22 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     }
 
     override fun onMovieClick(item: Movie, position: Int) {
-        Toast.makeText(requireContext(), "no me señales", Toast.LENGTH_LONG).show()
         animateButton(requireContext())
-        try {
-            findNavController().navigate(R.id.itemDetailFragment, bundleOf("idroom" to item))
-        }catch (e:Exception){
-            Log.d(TAG,"Failure cause ${e.message}")
+        lifecycleScope.launch {
+            delay(1000)
+            try {
+                findNavController().navigate(R.id.itemDetailFragment, bundleOf("idroom" to item))
+            }catch (e:Exception){
+                Log.d(TAG,"Failure cause ${e.message}")
+            }
         }
+
 
     }
     fun animateButton(context: Context){
         val render = Render(context)
-        render.setAnimation(Bounce().In(binding?.rvPopular!!))
-        render.setDuration(3000)
+        render.setAnimation(Fade().OutLeft(binding?.rvPopular!!))
+        render.setDuration(900)
         render.start()
     }
 

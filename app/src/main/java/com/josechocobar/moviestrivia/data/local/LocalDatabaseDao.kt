@@ -12,6 +12,9 @@ interface LocalDatabaseDao {
     @Query("SELECT * FROM movie_table WHERE idroom=:idroom ")
     suspend fun getMovieById(idroom:Int):Movie
 
+    @Query("SELECT * FROM movie_table WHERE title=:title")
+    fun getMovieListByName(title: String):Flow<List<Movie>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(movie: Movie)
 

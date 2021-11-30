@@ -99,27 +99,38 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     private fun setupSearchView(){
         binding?.svSearchMovie?.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(name: String): Boolean {
-                return if ((viewModel.getMovieByName(name).isNotEmpty())){
-                    binding?.rvPopular?.adapter = PopularAdapter(
-                        requireContext(),
-                        viewModel.getMovieByName(name),
-                        this@MainFragment
-                    )
-                    true
-                }else{
-                    false
+                val str = name.split(" ")
+
+                var title = ""
+                str.forEach {word->
+                    Log.d(TAG,"la lista busca ${word.get(0)} la primera letra?")
+                    val may = word[0].uppercaseChar()+word.substring(1)
+                    title+="$may "
                 }
+                title = title.dropLast(1)
+
+
+                Log.d(TAG,"la lista busca $title")
+                viewModel.getMovieByName(title)
+                setUpObserver()
+                return false
             }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
+            override fun onQueryTextChange(name: String): Boolean {
+                if (name.equals("")){
+                    viewModel.getMovieByName(name)
+                    setUpObserver()
+                }
                 return false
             }
         })
+
     }
 
     private fun setUpObserver() {
         viewModel.viewModelScope.launch {
             viewModel.getMovies()
+                .catch {  }
                 .map {
                     binding?.rvPopular?.adapter = PopularAdapter(
                         requireContext(),
@@ -127,7 +138,8 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                         this@MainFragment
                     )
                 }
-                .collect {}
+                .collect {  }
+
         }
     }
 

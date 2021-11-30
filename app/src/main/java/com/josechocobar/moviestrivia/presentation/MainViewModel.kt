@@ -10,22 +10,29 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repoImplementation: RepoImplementation
 ) : ViewModel() {
-    fun getMovieByName(name:String):List<Movie>{
-        var filterList = mutableListOf<Movie>()
-        repoImplementation.localDao.getMovieList().catch {  }.map {
-            filterList = it.filter { title-> title.title.contains(name) } as MutableList<Movie>
-        }
-        return filterList
+    var title: String =""
+
+    fun getMovieByName(name:String){
+        title=name
+        Log.d(TAG,"la lista de busqueda es $title")
+
+        //return filterList.filter { title-> title.title.contains(name) }
     }
 
     fun getMovies(): Flow<List<Movie>> {
-     return repoImplementation.localDao.getMovieList()
+        return if (title ==""){
+            repoImplementation.localDao.getMovieList()
+        } else{
+            repoImplementation.localDao.getMovieListByName(title)
+        }
+
     }
 
     suspend fun internetStatus() = flow<Boolean> {

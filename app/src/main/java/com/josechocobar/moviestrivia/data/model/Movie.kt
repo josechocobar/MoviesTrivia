@@ -24,7 +24,7 @@ data class Movie(
     val poster_path: String,
     val release_date: String,
     @ColumnInfo(name = "title")
-    val title: String,
+    var title: String,
     @ColumnInfo(name = "video")
     val video: Boolean,
     val vote_average: Double,

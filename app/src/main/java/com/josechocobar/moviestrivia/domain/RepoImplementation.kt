@@ -1,6 +1,5 @@
 package com.josechocobar.moviestrivia.domain
 
-import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.local.LocalDatabaseDao
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.data.model.MovieRequest
@@ -19,5 +18,8 @@ class RepoImplementation @Inject constructor(
 
     override suspend fun getMovieLocalList(): Flow<List<Movie>> {
         return localDao.getMovieList()
+    }
+    override suspend fun getMovieById(idroom:Int):Movie{
+        return localDao.getMovieById(idroom)
     }
 }

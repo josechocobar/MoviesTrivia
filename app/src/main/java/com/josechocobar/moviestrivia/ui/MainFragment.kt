@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.josechocobar.moviestrivia.R
 import androidx.fragment.app.viewModels
@@ -20,21 +19,20 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
-import com.josechocobar.moviestrivia.ui.animations.Bounce
 import com.josechocobar.moviestrivia.ui.animations.Fade
-import com.josechocobar.moviestrivia.ui.animations.Flip
 import com.josechocobar.moviestrivia.ui.animations.Render
 import com.josechocobar.moviestrivia.ui.recyclerView.PopularAdapter
+import com.josechocobar.moviestrivia.utils.DateHandler
 import com.josechocobar.moviestrivia.utils.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
@@ -45,6 +43,8 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     var tvInternetChecker: TextView? = null
     var upgradeButton: Button? = null
     var loadingDialog: LoadingDialog? = null
+    var date : LocalDateTime?=null
+    var dbPull = true
 
 
     override fun onCreateView(
@@ -61,18 +61,29 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         tvInternetChecker = binding!!.tvInternetChecker
         upgradeButton = binding!!.buUpgradeDb
         loadingDialog = LoadingDialog(requireActivity())
+        date = LocalDateTime.now()
         setUpRecyclerView()
         setButtons()
         setUpObserver()
         observeInternet()
     }
     fun observeInternet(){
-        viewModel.viewModelScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
             viewModel.internetStatus().catch { }.collect { value ->
                 Log.d(ContentValues.TAG, "The value is $value")
                 when (value) {
                     true -> {
-                        upgradeDb()
+                        val nowDate = LocalDateTime.now()
+                        if (!DateHandler().isLessThanT(date!!, nowDate)) {
+                            Log.d(TAG, "db upgrade on")
+                            upgradeDb()
+                            date=LocalDateTime.now()
+                        }
+                        if (dbPull){
+                            Log.d(TAG, "db upgrade first time")
+                            upgradeDb()
+                            dbPull=false
+                        }
                     }
                     false -> {
                         Log.d(ContentValues.TAG, "User db")
@@ -83,6 +94,17 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
             }
         }
     }
+    /*
+    val nowDate = LocalDateTime.now()
+        if (DateHandler().isLessThanT(date, nowDate)) {
+            Log.d(TAG, "db upgrade on")
+            actualDb()
+        }
+        if (getSizeOfList()==0){
+            Log.d(TAG, "db upgrade first time")
+            actualDb()
+        }
+     */
 
     fun setUpObserver() {
         viewModel.viewModelScope.launch {
@@ -133,7 +155,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     }
 
     override fun onMovieClick(item: Movie, position: Int) {
-        animateButton(requireContext())
+        animateButton()
         lifecycleScope.launch {
             delay(1000)
             try {
@@ -145,8 +167,8 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
 
 
     }
-    fun animateButton(context: Context){
-        val render = Render(context)
+    fun animateButton(){
+        val render = Render()
         render.setAnimation(Fade().OutLeft(binding?.rvPopular!!))
         render.setDuration(900)
         render.start()

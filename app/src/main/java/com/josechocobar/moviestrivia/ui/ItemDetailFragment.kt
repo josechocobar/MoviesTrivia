@@ -2,6 +2,7 @@ package com.josechocobar.moviestrivia.ui
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.net.Uri
 import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.MediaController
+import android.widget.VideoView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.josechocobar.moviestrivia.R
@@ -21,6 +24,7 @@ import com.josechocobar.moviestrivia.ui.animations.Render
 class ItemDetailFragment : Fragment() {
     private var binding: FragmentItemDetailBinding? = null
     private var movie: Movie? = null
+    var videoView : VideoView?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { bundle ->
@@ -40,14 +44,10 @@ class ItemDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentItemDetailBinding.bind(view)
-        animateSomething(requireContext())
+        animateSomething()
         binding?.let {
             setData()
         }
-
-
-
-        Log.d(TAG, "Movie is $movie")
     }
 
     fun setData() {
@@ -57,14 +57,14 @@ class ItemDetailFragment : Fragment() {
             .transform(
                 RoundedCorners(200)
             ).centerCrop().into(binding!!.ivItemPoster)
-        //Glide.with(context).load("https://image.tmdb.org/t/p/original${item.poster_path}").transform(RoundedCorners(200)).centerCrop().into(itemView.findViewById(R.id.img_movie))
-    }
+        }
 
-    fun animateSomething(context: Context) {
-        val render = Render(context)
+    fun animateSomething() {
+        val render = Render()
         render.setAnimation(Bounce().In(binding?.containerDetailLayout!!))
-        render.setDuration(4000)
+        render.setDuration(2000)
         render.start()
     }
+
 
 }

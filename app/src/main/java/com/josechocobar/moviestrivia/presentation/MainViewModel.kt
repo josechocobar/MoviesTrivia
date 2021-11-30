@@ -4,7 +4,6 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.josechocobar.moviestrivia.application.InternetConnectionChecker
-import com.josechocobar.moviestrivia.application.Resource
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,10 +23,20 @@ class MainViewModel @Inject constructor(
     suspend fun getMovieById(idroom:Int): Movie {
         return repoImplementation.localDao.getMovieById(idroom)
     }
+    suspend fun getSizeOfList(): Int {
+        var list = listOf<Movie>()
+        getMovies().collect { list = it
+        }
+        Log.d(TAG,"size is ${list.size}")
+        return list.size
+    }
 
     suspend fun internetStatus() = flow<Boolean> {
+        while (true){
             emit(InternetConnectionChecker().internetIsConnected())
-            delay(100000)
+            delay(5000)
+        }
+
     }
     suspend fun actualDb(){
         val fetchPopularMovieData = try {

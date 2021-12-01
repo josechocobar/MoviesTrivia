@@ -46,6 +46,9 @@
 <br/>
 <br/>
 <br/>
+#### El apk de la app se encuentra en el repo bajo el nombre de josechocobar-challenge.apk
+<br/>
+
 
 
 ## A realizar.

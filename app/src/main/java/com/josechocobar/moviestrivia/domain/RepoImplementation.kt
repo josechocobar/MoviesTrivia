@@ -3,6 +3,7 @@ package com.josechocobar.moviestrivia.domain
 import com.josechocobar.moviestrivia.data.local.LocalDatabaseDao
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.data.model.MovieRequest
+import com.josechocobar.moviestrivia.data.model.Video
 import com.josechocobar.moviestrivia.data.remote.RemoteDataSourceInt
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -21,5 +22,9 @@ class RepoImplementation @Inject constructor(
     }
     override suspend fun getMovieById(idroom:Int):Movie{
         return localDao.getMovieById(idroom)
+    }
+
+    override suspend fun getTrailer(id: Int): Video {
+        return remoteDataSource.getTrailer(id)
     }
 }

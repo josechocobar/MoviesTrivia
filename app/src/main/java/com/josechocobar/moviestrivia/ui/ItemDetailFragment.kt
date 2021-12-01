@@ -1,28 +1,34 @@
 package com.josechocobar.moviestrivia.ui
 
 import android.content.ContentValues.TAG
-import android.content.Context
-import android.net.Uri
-import android.nfc.Tag
+
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import android.widget.VideoView
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.josechocobar.moviestrivia.R
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentItemDetailBinding
-import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
+import com.josechocobar.moviestrivia.presentation.MainViewModel
 import com.josechocobar.moviestrivia.ui.animations.Bounce
 import com.josechocobar.moviestrivia.ui.animations.Render
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
+@AndroidEntryPoint
 class ItemDetailFragment : Fragment() {
     private var binding: FragmentItemDetailBinding? = null
+    private val viewModel: MainViewModel by viewModels()
     private var movie: Movie? = null
     var videoView : VideoView?=null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +51,12 @@ class ItemDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentItemDetailBinding.bind(view)
         animateSomething()
-        binding?.let {
-            setData()
+        setData()
+        try {
+            movie?.let { setVideo(movie!!.id) }
+
+        }catch (e:Exception){
+            Log.d(TAG,"fallo por ${e.message}")
         }
     }
 
@@ -57,6 +67,7 @@ class ItemDetailFragment : Fragment() {
             .transform(
                 RoundedCorners(200)
             ).centerCrop().into(binding!!.ivItemPoster)
+        //movie?.id?.let { setVideo(it) }
         }
 
     fun animateSomething() {
@@ -64,6 +75,12 @@ class ItemDetailFragment : Fragment() {
         render.setAnimation(Bounce().In(binding?.containerDetailLayout!!))
         render.setDuration(2000)
         render.start()
+    }
+    fun setVideo(id:Int){
+        GlobalScope.launch(Main) {
+            viewModel.getLinkOfVideo(id)
+        }
+
     }
 
 

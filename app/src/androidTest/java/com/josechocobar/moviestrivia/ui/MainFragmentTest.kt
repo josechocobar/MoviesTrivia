@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.TestInstance
 
+/*
 @AndroidEntryPoint
 class MainFragmentTest() {
     private lateinit var scenario: FragmentScenario<MainFragment>
@@ -48,3 +49,5 @@ class MainFragmentTest() {
     }
 
 }
+
+ */

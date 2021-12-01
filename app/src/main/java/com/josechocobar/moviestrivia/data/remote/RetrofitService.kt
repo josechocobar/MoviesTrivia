@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitService {
     private val client : OkHttpClient  = OkHttpClient.Builder()
-        .connectTimeout(20,TimeUnit.SECONDS)
-        .writeTimeout(20,TimeUnit.SECONDS)
-        .readTimeout(20,TimeUnit.SECONDS)
-        .callTimeout(20,TimeUnit.SECONDS)
+        .connectTimeout(60,TimeUnit.SECONDS)
+        .writeTimeout(60,TimeUnit.SECONDS)
+        .readTimeout(60,TimeUnit.SECONDS)
+        .callTimeout(60,TimeUnit.SECONDS)
         .build()
 
     val webService : WebService by lazy {

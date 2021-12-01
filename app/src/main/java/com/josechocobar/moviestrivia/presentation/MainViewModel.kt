@@ -5,12 +5,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.josechocobar.moviestrivia.application.InternetConnectionChecker
 import com.josechocobar.moviestrivia.data.model.Movie
+import com.josechocobar.moviestrivia.data.model.Trailer
 import com.josechocobar.moviestrivia.domain.RepoImplementation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,5 +53,18 @@ class MainViewModel @Inject constructor(
             repoImplementation.localDao.insertItem(it)
         } ?: throw Exception("no results")
         Log.d(TAG,"upgraded db")
+    }
+    suspend fun getTrailer(id: Int): List<Trailer> {
+        return try {
+            repoImplementation.remoteDataSource.getTrailer(id).results
+        } catch (e: Exception) {
+            throw Exception("remote repo error", e)
+        }
+    }
+    suspend fun getLinkOfVideo(id:Int){
+        val key = getTrailer(id)
+        val link = " http://www.youtube.com/watch?v=${key.get(0).key}"
+        //cargar el video
+        Log.d("key","el link es $link")
     }
 }

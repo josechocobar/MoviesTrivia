@@ -11,6 +11,9 @@ object Constants {
     //apiurl
     const val API_URL = "$BASE_URL/3/movie/"
 
+    //image urlbase
+    const val IMG_URL = "https://image.tmdb.org/t/p/original"
+
 
 
 

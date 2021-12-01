@@ -1,10 +1,9 @@
 package com.josechocobar.moviestrivia.ui.animations
 
 import android.animation.AnimatorSet
-import android.content.Context
 import android.view.animation.AccelerateInterpolator
 
-class Render (var cx: Context){
+class Render (){
     var du: Long = 1000
 
     lateinit var animatorSet: AnimatorSet

@@ -1,9 +1,5 @@
 package com.josechocobar.moviestrivia.application
 
-import android.content.Context
-import android.net.ConnectivityManager
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
 
 
 class InternetConnectionChecker {

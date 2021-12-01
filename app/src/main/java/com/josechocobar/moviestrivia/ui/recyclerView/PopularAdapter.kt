@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.josechocobar.moviestrivia.R
+import com.josechocobar.moviestrivia.application.Constants.IMG_URL
 import com.josechocobar.moviestrivia.data.model.Movie
 
 class PopularAdapter(
@@ -41,7 +42,7 @@ class PopularAdapter(
         override fun bind(item: Movie,position: Int){
             movieTitle.text = item.title
             popularity.text = item.popularity.toString()
-            Glide.with(context).load("https://image.tmdb.org/t/p/original${item.poster_path}").transform(RoundedCorners(200)).centerCrop().into(itemView.findViewById(R.id.img_movie))
+            Glide.with(context).load("$IMG_URL${item.poster_path}").transform(RoundedCorners(200)).centerCrop().into(itemView.findViewById(R.id.img_movie))
             itemView.setOnClickListener {
                 itemClickListener.onMovieClick(item, position)
             }

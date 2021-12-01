@@ -1,8 +1,6 @@
 package com.josechocobar.moviestrivia.ui
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -44,7 +42,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     var tvInternetChecker: TextView? = null
     var upgradeButton: Button? = null
     var loadingDialog: LoadingDialog? = null
-    private var date : LocalDateTime?=null
+    private var date: LocalDateTime? = null
     var dbPull = true
 
 
@@ -52,7 +50,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -69,22 +66,19 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         observeInternet()
         setupSearchView()
     }
-    private fun observeInternet(){
+
+    private fun observeInternet() {
         GlobalScope.launch(Dispatchers.Main) {
             viewModel.internetStatus().catch { }.collect { value ->
                 Log.d(TAG, "The value is $value")
                 when (value) {
                     true -> {
-                        val nowDate = LocalDateTime.now()
-                        if (!DateHandler().isLessThanT(date!!, nowDate)) {
-                            Log.d(TAG, "db upgrade on")
-                            upgradeDb()
-                            date=LocalDateTime.now()
-                        }
-                        if (dbPull){
+                        stateConnectionChanged()
+                        checkDate()
+                        if (dbPull) {
                             Log.d(TAG, "db upgrade first time")
                             upgradeDb()
-                            dbPull=false
+                            dbPull = false
                         }
                     }
                     false -> {
@@ -96,31 +90,22 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
             }
         }
     }
-    private fun setupSearchView(){
-        binding?.svSearchMovie?.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
+
+    private fun setupSearchView() {
+        binding?.svSearchMovie?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(name: String): Boolean {
-                val str = name.split(" ")
-
-                var title = ""
-                str.forEach {word->
-                    Log.d(TAG,"la lista busca ${word.get(0)} la primera letra?")
-                    val may = word[0].uppercaseChar()+word.substring(1)
-                    title+="$may "
-                }
-                title = title.dropLast(1)
-
-
-                Log.d(TAG,"la lista busca $title")
-                viewModel.getMovieByName(title)
+                viewModel.getMovieByName(name)
                 setUpObserver()
                 return false
             }
 
             override fun onQueryTextChange(name: String): Boolean {
-                if (name.equals("")){
+                if (name.equals("")) {
                     viewModel.getMovieByName(name)
                     setUpObserver()
                 }
+                viewModel.getMovieByName(name)
+                setUpObserver()
                 return false
             }
         })
@@ -130,7 +115,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     private fun setUpObserver() {
         viewModel.viewModelScope.launch {
             viewModel.getMovies()
-                .catch {  }
+                .catch { }
                 .map {
                     binding?.rvPopular?.adapter = PopularAdapter(
                         requireContext(),
@@ -138,7 +123,7 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
                         this@MainFragment
                     )
                 }
-                .collect {  }
+                .collect { }
 
         }
     }
@@ -153,28 +138,42 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         )
     }
 
+    suspend fun checkDate() {
+        val nowDate = LocalDateTime.now()
+        if (!DateHandler().isLessThanT(date!!, nowDate)) {
+            Log.d(TAG, "db upgrade on")
+            upgradeDb()
+            date = LocalDateTime.now()
+        }
+    }
+
     private fun setButtons() {
         upgradeButton?.setOnClickListener {
             viewModel.viewModelScope.launch {
-                viewModel.internetStatus().catch { }.collect { value ->
-                    Log.d(TAG, "The value is $value")
+                viewModel.internetStatus().map { value ->
+                    Log.d(TAG, "The value  upb is $value")
+
                     when (value) {
                         true -> {
-                            upgradeDb()
+                            stateConnectionChanged()
+                            checkDate()
                         }
                     }
                 }
+                    .collect { }
 
             }
         }
     }
 
     private suspend fun upgradeDb() {
+        Log.d(TAG, "actualizar db")
+        viewModel.actualDb()
+    }
+
+    private fun stateConnectionChanged() {
         tvInternetChecker?.text = getString(R.string.connection)
         tvInternetChecker?.visibility = View.GONE
-        Log.d(TAG, "actualizar db")
-        Log.d(TAG, "db upgrade on")
-        viewModel.actualDb()
     }
 
     override fun onMovieClick(item: Movie, position: Int) {
@@ -183,14 +182,15 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
             delay(1000)
             try {
                 findNavController().navigate(R.id.itemDetailFragment, bundleOf("idroom" to item))
-            }catch (e:Exception){
-                Log.d(TAG,"Failure cause ${e.message}")
+            } catch (e: Exception) {
+                Log.d(TAG, "Failure cause ${e.message}")
             }
         }
 
 
     }
-    private fun animateButton(){
+
+    private fun animateButton() {
         val render = Render()
         render.setAnimation(Fade().OutLeft(binding?.rvPopular!!))
         render.setDuration(900)

@@ -16,10 +16,9 @@ import com.josechocobar.moviestrivia.R
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentItemDetailBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
-import com.josechocobar.moviestrivia.ui.animations.Bounce
-import com.josechocobar.moviestrivia.ui.animations.Render
+import com.josechocobar.moviestrivia.ui.animations.Rebound
+import com.josechocobar.moviestrivia.ui.animations.Renderizator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -71,8 +70,8 @@ class ItemDetailFragment : Fragment() {
         }
 
     fun animateSomething() {
-        val render = Render()
-        render.setAnimation(Bounce().In(binding?.containerDetailLayout!!))
+        val render = Renderizator()
+        render.setAnimation(Rebound().enter(binding?.containerDetailLayout!!))
         render.setDuration(2000)
         render.start()
     }

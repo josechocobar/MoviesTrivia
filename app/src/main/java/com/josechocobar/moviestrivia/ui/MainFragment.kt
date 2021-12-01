@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.josechocobar.moviestrivia.data.model.Movie
 import com.josechocobar.moviestrivia.databinding.FragmentMainBinding
 import com.josechocobar.moviestrivia.presentation.MainViewModel
-import com.josechocobar.moviestrivia.ui.animations.Fade
-import com.josechocobar.moviestrivia.ui.animations.Render
+import com.josechocobar.moviestrivia.ui.animations.Turn
+import com.josechocobar.moviestrivia.ui.animations.Renderizator
 import com.josechocobar.moviestrivia.ui.recyclerView.PopularAdapter
 import com.josechocobar.moviestrivia.utils.DateHandler
 import com.josechocobar.moviestrivia.utils.LoadingDialog
@@ -191,8 +191,8 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     }
 
     private fun animateButton() {
-        val render = Render()
-        render.setAnimation(Fade().OutLeft(binding?.rvPopular!!))
+        val render = Renderizator()
+        render.setAnimation(Turn().getOutByLeft(binding?.rvPopular!!))
         render.setDuration(900)
         render.start()
     }

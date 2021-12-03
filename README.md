@@ -49,6 +49,8 @@
 #### El apk de la app se encuentra en el repo bajo el nombre de josechocobar-challenge.apk
 <br/>
 
+##Nota: La aplicación no detecta bien el internet en emuladores, solo funciona correctamente en celulares físicos.
+
 
 
 ## A realizar.

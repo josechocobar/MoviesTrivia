@@ -51,12 +51,6 @@ class ItemDetailFragment : Fragment() {
         binding = FragmentItemDetailBinding.bind(view)
         animateSomething()
         setData()
-        try {
-            movie?.let { setVideo(movie!!.id) }
-
-        }catch (e:Exception){
-            Log.d(TAG,"fallo por ${e.message}")
-        }
     }
 
     fun setData() {
@@ -74,12 +68,6 @@ class ItemDetailFragment : Fragment() {
         render.setAnimation(Rebound().enter(binding?.containerDetailLayout!!))
         render.setDuration(2000)
         render.start()
-    }
-    fun setVideo(id:Int){
-        GlobalScope.launch(Main) {
-            viewModel.getLinkOfVideo(id)
-        }
-
     }
 
 

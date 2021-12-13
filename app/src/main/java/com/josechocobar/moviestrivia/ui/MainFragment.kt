@@ -25,7 +25,6 @@ import com.josechocobar.moviestrivia.ui.animations.Turn
 import com.josechocobar.moviestrivia.ui.animations.Renderizator
 import com.josechocobar.moviestrivia.ui.recyclerView.PopularAdapter
 import com.josechocobar.moviestrivia.utils.DateHandler
-import com.josechocobar.moviestrivia.utils.LoadingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
@@ -41,7 +40,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
     private val viewModel: MainViewModel by viewModels()
     var tvInternetChecker: TextView? = null
     var upgradeButton: Button? = null
-    var loadingDialog: LoadingDialog? = null
     private var date: LocalDateTime? = null
     var dbPull = true
 
@@ -58,7 +56,6 @@ class MainFragment : Fragment(), PopularAdapter.OnMovieItemClickListener {
         binding = FragmentMainBinding.bind(view)
         tvInternetChecker = binding!!.tvInternetChecker
         upgradeButton = binding!!.buUpgradeDb
-        loadingDialog = LoadingDialog(requireActivity())
         date = LocalDateTime.now()
         setUpRecyclerView()
         setButtons()

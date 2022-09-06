@@ -16,12 +16,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.TestInstance
 
-/*
+
 @AndroidEntryPoint
 class MainFragmentTest() {
     private lateinit var scenario: FragmentScenario<MainFragment>
     private val spiderman = "spi"
-    private val venom = "enom"
+    private val venom = "venom"
     private val notice = "notice"
     private val mentalista = "mentalista"
     private val shangchi = "shangchi"
@@ -49,5 +49,3 @@ class MainFragmentTest() {
     }
 
 }
-
- */

@@ -54,17 +54,4 @@ class MainViewModel @Inject constructor(
         } ?: throw Exception("no results")
         Log.d(TAG,"upgraded db")
     }
-    suspend fun getTrailer(id: Int): List<Trailer> {
-        return try {
-            repoImplementation.remoteDataSource.getTrailer(id).results
-        } catch (e: Exception) {
-            throw Exception("remote repo error", e)
-        }
-    }
-    suspend fun getLinkOfVideo(id:Int){
-        val key = getTrailer(id)
-        val link = " http://www.youtube.com/watch?v=${key.get(0).key}"
-        //cargar el video
-        Log.d("key","el link es $link")
-    }
 }
